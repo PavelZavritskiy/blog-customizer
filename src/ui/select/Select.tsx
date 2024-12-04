@@ -1,5 +1,4 @@
-import { useState, useRef } from 'react';
-import type { MouseEventHandler } from 'react';
+import React, { useState, useRef, MouseEventHandler } from 'react';
 import clsx from 'clsx';
 import { OptionType } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
@@ -8,7 +7,6 @@ import { Option } from './Option';
 import { isFontFamilyClass } from './helpers/isFontFamilyClass';
 import { useEnterSubmit } from './hooks/useEnterSubmit';
 import { useOutsideClickClose } from './hooks/useOutsideClickClose';
-
 import styles from './Select.module.scss';
 
 type SelectProps = {
@@ -40,35 +38,41 @@ export const Select = (props: SelectProps) => {
 	});
 
 	const handleOptionClick = (option: OptionType) => {
-		setIsOpen(false);
 		onChange?.(option);
+		setIsOpen(false);
 	};
+
 	const handlePlaceHolderClick: MouseEventHandler<HTMLDivElement> = () => {
-		setIsOpen((isOpen) => !isOpen);
+		setIsOpen((prev) => !prev);
+	};
+
+	const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+		if (
+			rootRef.current &&
+			!rootRef.current.contains(event.relatedTarget as Node)
+		) {
+			setIsOpen(false);
+		}
 	};
 
 	return (
-		<div className={styles.container}>
+		<div
+			className={styles.container}
+			ref={rootRef}
+			onBlur={handleBlur}
+			tabIndex={-1}>
 			{title && (
-				<>
-					<Text size={12} weight={800} uppercase>
-						{title}
-					</Text>
-				</>
+				<Text size={12} weight={800} uppercase>
+					{title}
+				</Text>
 			)}
 			<div
 				className={styles.selectWrapper}
-				ref={rootRef}
 				data-is-active={isOpen}
 				data-testid='selectWrapper'>
 				<img src={arrowDown} alt='иконка стрелочки' className={styles.arrow} />
 				<div
-					className={clsx(
-						styles.placeholder,
-						(styles as Record<string, string>)[optionClassName]
-					)}
-					data-status={status}
-					data-selected={!!selected?.value}
+					className={clsx(styles.placeholder, styles[optionClassName])}
 					onClick={handlePlaceHolderClick}
 					role='button'
 					tabIndex={0}
