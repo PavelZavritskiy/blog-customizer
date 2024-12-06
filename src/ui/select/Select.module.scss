@@ -2,8 +2,8 @@
 	position: relative;
 
 	&:focus-visible {
-		outline: 2px solid #007bff; // Цвет обводки при фокусировке
-		outline-offset: 2px; // Расстояние от текста до обводки
+		outline: 2px solid #007bff;
+		outline-offset: 2px;
 	}
 }
 

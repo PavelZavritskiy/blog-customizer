@@ -9,6 +9,7 @@ import { Separator } from 'src/ui/separator';
 import { Select } from 'src/ui/select';
 import { Text } from 'src/ui/text';
 import {
+	defaultArticleState,
 	backgroundColors,
 	contentWidthArr,
 	fontColors,
@@ -16,39 +17,44 @@ import {
 	fontSizeOptions,
 	defaultCssVars,
 	TCssVars,
+	cssVariableNames,
 } from 'src/constants/articleProps';
 
 export const ArticleParamsForm: React.FC<{
 	setCssVars: (state: TCssVars) => void;
 }> = ({ setCssVars }) => {
 	const [stateFormOpen, setStateFormOpen] = useState(false);
-	const [stateFontFamily, setStateFontFamily] = useState(fontFamilyOptions[0]);
-	const [stateFontSize, setStateFontSize] = useState(fontSizeOptions[0]);
-	const [stateFontColor, setStateFontColor] = useState(fontColors[0]);
+	const [stateFontFamily, setStateFontFamily] = useState(
+		defaultArticleState.fontFamilyOption
+	);
+	const [stateFontSize, setStateFontSize] = useState(
+		defaultArticleState.fontSizeOption
+	);
+	const [stateFontColor, setStateFontColor] = useState(
+		defaultArticleState.fontColor
+	);
 	const [stateBackground, setStateBackgroundColor] = useState(
-		backgroundColors[0]
+		defaultArticleState.backgroundColor
 	);
 	const [stateContentWidth, setStateContentWidth] = useState(
-		contentWidthArr[0]
+		defaultArticleState.contentWidth
 	);
+	const rootRef = useRef<HTMLDivElement>(null);
 
-	const resetToInitialState = () => {
-		setStateFontFamily(fontFamilyOptions[0]);
-		setStateFontSize(fontSizeOptions[0]);
-		setStateFontColor(fontColors[0]);
-		setStateBackgroundColor(backgroundColors[0]);
-		setStateContentWidth(contentWidthArr[0]);
+	const cssVars = {
+		[cssVariableNames.fontFamily]: stateFontFamily.value,
+		[cssVariableNames.fontSize]: stateFontSize.value,
+		[cssVariableNames.fontColor]: stateFontColor.value,
+		[cssVariableNames.containerWidth]: stateContentWidth.value,
+		[cssVariableNames.bgColor]: stateBackground.value,
 	};
 
-	const applySettings = () => {
-		const cssVars = {
-			'--font-family': stateFontFamily.value,
-			'--font-size': stateFontSize.value,
-			'--font-color': stateFontColor.value,
-			'--container-width': stateContentWidth.value,
-			'--bg-color': stateBackground.value,
-		};
-		setCssVars(cssVars);
+	const resetToInitialState = () => {
+		setStateFontFamily(defaultArticleState.fontFamilyOption);
+		setStateFontSize(defaultArticleState.fontSizeOption);
+		setStateFontColor(defaultArticleState.fontColor);
+		setStateBackgroundColor(defaultArticleState.backgroundColor);
+		setStateContentWidth(defaultArticleState.contentWidth);
 	};
 
 	const formStyle = clsx({
@@ -57,10 +63,8 @@ export const ArticleParamsForm: React.FC<{
 	});
 
 	const toggleButtonState = (state: boolean): boolean => {
-		return state === false;
+		return !state;
 	};
-
-	const rootRef = useRef<HTMLDivElement>(null);
 
 	useClose({
 		isOpen: stateFormOpen,
@@ -78,8 +82,13 @@ export const ArticleParamsForm: React.FC<{
 				}}
 			/>
 			<aside className={formStyle} ref={rootRef}>
-				<form className={styles.form}>
-					<Text uppercase={true} size={31} weight={800}>
+				<form
+					className={styles.form}
+					onSubmit={(e) => {
+						e.preventDefault();
+						setCssVars(cssVars);
+					}}>
+					<Text as='h2' uppercase={true} size={31} weight={800}>
 						{'Задайте параметры'}
 					</Text>
 
@@ -131,14 +140,7 @@ export const ArticleParamsForm: React.FC<{
 							}}
 							type='clear'
 						/>
-						<Button
-							title='Применить'
-							onClick={(e) => {
-								e.preventDefault();
-								applySettings();
-							}}
-							type='apply'
-						/>
+						<Button title='Применить' type='apply' />
 					</div>
 				</form>
 			</aside>

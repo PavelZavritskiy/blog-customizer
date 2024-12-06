@@ -187,3 +187,11 @@ export const defaultCssVars = {
 	'--container-width': defaultArticleState.contentWidth.value,
 	'--bg-color': defaultArticleState.backgroundColor.value,
 };
+
+export const cssVariableNames = {
+	fontFamily: '--font-family',
+	fontSize: '--font-size',
+	fontColor: '--font-color',
+	containerWidth: '--container-width',
+	bgColor: '--bg-color',
+};

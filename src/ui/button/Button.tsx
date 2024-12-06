@@ -9,7 +9,7 @@ export const Button = ({
 	type,
 }: {
 	title: string;
-	onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // Измените тип здесь
+	onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	htmlType?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
 	type: 'apply' | 'clear';
 }) => {
